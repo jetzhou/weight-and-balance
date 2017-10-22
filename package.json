@@ -4,9 +4,10 @@
   "homepage": "https://jetzhou.github.io/weight-and-balance",
   "private": true,
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "lodash": "^4.17.4",
+    "material-ui": "^0.19.4",
+    "prop-types": "^15.6.0",
     "react": "^16.0.0",
-    "react-bootstrap": "^0.31.3",
     "react-dom": "^16.0.0",
     "react-scripts": "1.0.14"
   },
