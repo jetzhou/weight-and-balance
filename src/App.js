@@ -1,7 +1,8 @@
 // vi: filetype=javascript.jsx
 import React, { Component } from "react";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import WeightAndBalance from "./weightAndBalance";
+import WeightAndBalance from "./WeightAndBalance";
+import "./App.css";
 
 class App extends Component {
   render() {
