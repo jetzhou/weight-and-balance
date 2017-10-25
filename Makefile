@@ -1,3 +1,5 @@
+.PHONY: build
+
 run:
 	./node_modules/.bin/react-scripts start
 
