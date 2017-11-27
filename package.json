@@ -10,10 +10,12 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-scripts": "1.0.14",
-    "recharts": "file:../recharts"
+    "recharts": "file:../recharts",
+    "typeface-roboto": "^0.0.45"
   },
   "devDependencies": {
-    "gh-pages": "1.0.0"
+    "gh-pages": "1.0.0",
+    "source-map-explorer": "^1.5.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,7 +1,13 @@
 // vi: filetype=javascript.jsx
 import React, { Component } from "react";
-import { omit, reduce, set, toNumber } from "lodash/fp";
 import PropTypes from "prop-types";
+import { omit, reduce, set, toNumber } from "lodash/fp";
+
+import "./WeightAndBalance.css";
+
+import Chart from "./Chart";
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
+import Slider from "material-ui/Slider";
 import {
   Table,
   TableBody,
@@ -10,13 +16,16 @@ import {
   TableRow,
   TableRowColumn,
 } from "material-ui/Table";
-import Slider from "material-ui/Slider";
 import TextField from "material-ui/TextField";
-import Chart from "./Chart";
 
-class WeightAndBalance extends Component {
+const POUNDS_PER_GALLON_100LL = 6;
+const POUNDS_PER_GALLON_JET_FUEL = 6.7;
+const DEFAULT_MAX_WEIGHT = 600;
+
+export default class WeightAndBalance extends Component {
   static propTypes = {
     tailNumber: PropTypes.string.isRequired,
+    jetFuel: PropTypes.bool,
     basicBody: PropTypes.shape({
       weight: PropTypes.number.isRequired,
       arm: PropTypes.number.isRequired,
@@ -75,7 +84,8 @@ class WeightAndBalance extends Component {
         baggage2: {...props.baggage2},
       },
       total: { maxWeight: props.maxWeight },
-      fuelInPounds: true,
+      fuelUnit: "lb",
+      poundsPerGallon: props.jetFuel ? POUNDS_PER_GALLON_JET_FUEL : POUNDS_PER_GALLON_100LL,
     };
   }
 
@@ -90,22 +100,23 @@ class WeightAndBalance extends Component {
     const emptyArm = emptyMoment / emptyWeight;
 
     return (
-      <div style={{display: "flex"}}>
-        {this._renderInputs()}
-        {this._renderTable(totalWeight, totalArm)}
-        <Chart
-          style={{margingLeft: "40px"}}
-          limit={this.props.normalLimit}
-          fullCGPoint={{ weight: totalWeight, arm: totalArm }}
-          emptyCGPoint={{ weight: emptyWeight, arm: emptyArm }}
-        />
+      <div id="container">
+        <div id="inputs">{this._renderInputs()}</div>
+        <div id="chart">
+          <Chart
+            limit={this.props.normalLimit}
+            fullCGPoint={{ weight: totalWeight, arm: totalArm }}
+            emptyCGPoint={{ weight: emptyWeight, arm: emptyArm }}
+          />
+        </div>
+        <div id="table">{this._renderTable(totalWeight, totalArm)}</div>
       </div>
     )
   }
 
   _renderInputs() {
     return (
-      <div style={{width: "400px", marginRight: "40px"}}>
+      <div>
         {this._renderSlider("frontSeat", "Front Seat")}
         {this._renderSlider("rearSeat", "Rear Seat")}
         {this._renderSlider("fuel", "Fuel")}
@@ -116,41 +127,89 @@ class WeightAndBalance extends Component {
   }
 
   _renderSlider(part, name) {
-    const weight = this.state.parts[part].weight;
-    const max = this.state.parts[part].maxWeight || 600;
-    const onChange = (event, value) => this.setState(set(`parts.${part}.weight`, toNumber(value)));
+    const { poundsPerGallon, fuelUnit } = this.state;
+    const isFuelInGallon = part === "fuel" && fuelUnit === "gal";
+
+    let val = this.state.parts[part].weight;
+    let maxVal = this.state.parts[part].maxWeight || DEFAULT_MAX_WEIGHT;
+    if (isFuelInGallon) {
+      val = val / poundsPerGallon;
+      maxVal = maxVal / poundsPerGallon;
+    }
+
+    const onChange = (event, value) => {
+      value = toNumber(value);
+      if (isFuelInGallon) {
+        value *= poundsPerGallon;
+      }
+      this.setState(set(`parts.${part}.weight`, value));
+    };
+
     return (
-      <div style={{display: "flex", justifyContent: "around", width: "400px"}}>
-        <div style={{flexGrow: 1, width: "100px"}}>{name}</div>
-        <Slider
-          style={{flexGrow: 3, width: "200px"}}
-          defaultValue={weight}
-          value={weight}
-          min={0}
-          max={max}
-          step={1}
-          onChange={onChange}
-        />
-        <TextField
-          style={{flexGrow: 1, width: "60px", marginLeft: "30px"}}
-          id={`${part}Input`}
-          value={weight}
-          onChange={onChange}
-        />
+      <div className="sliderContainer">
+        <div className="name">{name}</div>
+        <div
+          className="adjustment"
+          style={{
+            paddingRight: part === "fuel" ? "95px" : "0px",
+            position: "relative",
+          }} 
+        >
+          <Slider
+            style={{ width: "100%", float: "left" }}
+            defaultValue={val}
+            value={val}
+            min={0}
+            max={maxVal}
+            step={1}
+            onChange={onChange}
+          />
+          {part === "fuel" &&
+            <RadioButtonGroup
+              style={{ position: "absolute", right: "0px", top: "20px", fontSize: "small" }}
+              name="fuelUnit"
+              onChange={(event, val) => this.setState({fuelUnit: val})}
+              valueSelected={fuelUnit}
+            >
+              <RadioButton
+                style={{ float: "left", width: "auto", marginRight: "6px" }}
+                iconStyle={{ marginRight: "2px"}}
+                label="lb"
+                value="lb"
+              />
+              <RadioButton
+                style={{ float: "left", width: "auto" }}
+                iconStyle={{marginRight: "2px"}}
+                label="gal"
+                value="gal"
+              />
+            </RadioButtonGroup>
+          }
+        </div>
+        <div className="value">
+          <TextField
+            style={{width: "65%"}}
+            inputStyle={{textAlign: "center"}}
+            id={`${part}Input`}
+            value={val}
+            onChange={onChange}
+          />
+          <span>{part === "fuel" ? this.state.fuelUnit : "lb"}</span>
+        </div>
       </div>
     )
   }
 
   _renderTable(totalWeight, totalArm) {
     return (
-      <Table style={{maxWidth: "700px"}}>
+      <Table>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
           <TableRow>
             <TableHeaderColumn></TableHeaderColumn>
             <TableHeaderColumn>Weight</TableHeaderColumn>
-            <TableHeaderColumn>Max Weight</TableHeaderColumn>
+            <TableHeaderColumn className="hiddable">Max Weight</TableHeaderColumn>
             <TableHeaderColumn>Arm</TableHeaderColumn>
-            <TableHeaderColumn>Moment</TableHeaderColumn>
+            <TableHeaderColumn className="hiddable">Moment</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={false}>
@@ -175,12 +234,10 @@ class WeightAndBalance extends Component {
       <TableRow>
         <TableRowColumn>{item}</TableRowColumn>
         <TableRowColumn>{weight}</TableRowColumn>
-        <TableRowColumn>{maxWeight}</TableRowColumn>
+        <TableRowColumn className="hiddable">{maxWeight}</TableRowColumn>
         <TableRowColumn>{arm.toFixed(2)}</TableRowColumn>
-        <TableRowColumn>{(weight * arm).toFixed(0)}</TableRowColumn>
+        <TableRowColumn className="hiddable">{(weight * arm).toFixed(0)}</TableRowColumn>
       </TableRow>
     );
   }
 }
-
-export default WeightAndBalance;

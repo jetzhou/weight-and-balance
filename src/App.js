@@ -1,5 +1,6 @@
 // vi: filetype=javascript.jsx
 import React, { Component } from "react";
+import "typeface-roboto";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import WeightAndBalance from "./WeightAndBalance";
 import "./App.css";

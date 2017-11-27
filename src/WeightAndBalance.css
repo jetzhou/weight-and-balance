@@ -1,0 +1,46 @@
+#container {
+}
+
+#inputs {
+}
+
+#chart {
+  width: 100%;
+  height: 350px;
+  font-size: x-small;
+}
+
+#table {
+
+}
+
+@media only screen and (max-width: 500px) {
+  #table .hiddable {
+    display: none;
+  }
+}
+
+.sliderContainer {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.sliderContainer .name {
+  font-size: small;
+  flex: 0 1 65px;
+  overflow: hidden;
+}
+
+.sliderContainer .adjustment {
+  flex-grow: 1;
+  height: 60px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.sliderContainer .value {
+  flex: 0 1 65px;
+}
+
