@@ -101,14 +101,17 @@ export default class WeightAndBalance extends Component {
     const emptyArm = emptyMoment / emptyWeight;
 
     return (
-      <div id="container">
-        <div id="inputs">{this._renderInputs()}</div>
-        <div id="chart">
-          <Chart
-            limit={this.props.normalLimit}
-            fullCGPoint={{ weight: totalWeight, arm: round(totalArm, 2) }}
-            emptyCGPoint={{ weight: emptyWeight, arm: round(emptyArm, 2) }}
-          />
+      <div>
+        <div>
+          <div id="inputs">{this._renderInputs()}</div>
+          <div id="chart">
+            <Chart
+              limit={this.props.normalLimit}
+              fullCGPoint={{ weight: totalWeight, arm: round(totalArm, 2) }}
+              emptyCGPoint={{ weight: emptyWeight, arm: round(emptyArm, 2) }}
+            />
+          </div>
+          <div style={{clear: "both"}} />
         </div>
         <div id="table">{this._renderTable(totalWeight, totalArm)}</div>
       </div>
