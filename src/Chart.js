@@ -47,10 +47,10 @@ export default class Chart extends Component {
           <ReferenceArea data={envelop} fill="#8884d8" />
           <Tooltip cursor={{ strokeDasharray: "3 3" }} />
           <Scatter type="number" data={[{...fullCGPoint, label: "Full Fuel CG"}]} fill="#de3242" shape="diamond">
-            <LabelList dataKey="label" position="right"/>
+            <LabelList dataKey="label" position="right" width={120}/>
           </Scatter>
           <Scatter type="number" data={[{...emptyCGPoint, label: "Empty Fuel CG"}]} fill="#de3242" shape="diamond">
-            <LabelList dataKey="label" position="right"/>
+            <LabelList dataKey="label" position="right" width={120}/>
           </Scatter>
           <XAxis type="number" dataKey="arm" name="CG" unit="inch" domain={armDomain}/>
           <YAxis type="number" dataKey="weight" name="Weight" unit="lb" domain={weightDomain}/>

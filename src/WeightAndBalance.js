@@ -121,16 +121,16 @@ export default class WeightAndBalance extends Component {
   _renderInputs() {
     return (
       <div>
-        {this._renderSlider("frontSeat", "Front Seat")}
-        {this._renderSlider("rearSeat", "Rear Seat")}
-        {this._renderSlider("fuel", "Fuel")}
-        {this._renderSlider("baggage1", "Baggage1")}
-        {this._renderSlider("baggage2", "Baggage2")}
+        {this._renderSlider("frontSeat", "Front Seat", 1)}
+        {this._renderSlider("rearSeat", "Rear Seat", 2)}
+        {this._renderSlider("fuel", "Fuel", 3)}
+        {this._renderSlider("baggage1", "Baggage1", 4)}
+        {this._renderSlider("baggage2", "Baggage2", 5)}
       </div>
     );
   }
 
-  _renderSlider(part, name) {
+  _renderSlider(part, name, tabindex) {
     const { poundsPerGallon, fuelUnit } = this.state;
     const isFuelInGallon = part === "fuel" && fuelUnit === "gal";
 
@@ -196,6 +196,7 @@ export default class WeightAndBalance extends Component {
             id={`${part}Input`}
             value={val}
             onChange={onChange}
+            tabindex={tabindex}
           />
           <span>{part === "fuel" ? this.state.fuelUnit : "lb"}</span>
         </div>
