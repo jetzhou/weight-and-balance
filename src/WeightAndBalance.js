@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { omit, reduce, set, toNumber } from "lodash/fp";
+import { round } from "lodash";
 
 import "./WeightAndBalance.css";
 
@@ -105,8 +106,8 @@ export default class WeightAndBalance extends Component {
         <div id="chart">
           <Chart
             limit={this.props.normalLimit}
-            fullCGPoint={{ weight: totalWeight, arm: totalArm }}
-            emptyCGPoint={{ weight: emptyWeight, arm: emptyArm }}
+            fullCGPoint={{ weight: totalWeight, arm: round(totalArm, 2) }}
+            emptyCGPoint={{ weight: emptyWeight, arm: round(emptyArm, 2) }}
           />
         </div>
         <div id="table">{this._renderTable(totalWeight, totalArm)}</div>
@@ -133,8 +134,8 @@ export default class WeightAndBalance extends Component {
     let val = this.state.parts[part].weight;
     let maxVal = this.state.parts[part].maxWeight || DEFAULT_MAX_WEIGHT;
     if (isFuelInGallon) {
-      val = val / poundsPerGallon;
-      maxVal = maxVal / poundsPerGallon;
+      val = Math.floor(val / poundsPerGallon);
+      maxVal = Math.floor(maxVal / poundsPerGallon);
     }
 
     const onChange = (event, value) => {
@@ -157,7 +158,6 @@ export default class WeightAndBalance extends Component {
         >
           <Slider
             style={{ width: "100%", float: "left" }}
-            defaultValue={val}
             value={val}
             min={0}
             max={maxVal}

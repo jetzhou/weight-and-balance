@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { reverse } from "lodash/fp";
 import {
   CartesianGrid,
+  LabelList,
   ReferenceArea,
   ResponsiveContainer,
   Scatter,
@@ -41,16 +42,18 @@ export default class Chart extends Component {
 
     return (
       <ResponsiveContainer width={"100%"} height={"100%"}>
-        <ScatterChart
-          margin={{ top: 20, right: 20, bottom: 10, left: -10 }}
-        >
-          <Scatter type="number" data={[fullCGPoint]} fill="#de3242" shape="diamond"/>
-          <Scatter type="number" data={[emptyCGPoint]} fill="#de3242" shape="diamond"/>
-          <XAxis type="number" dataKey="arm" name="CG" unit="inch" domain={armDomain}/>
-          <YAxis type="number" dataKey="weight" name="weight" unit="lb" domain={weightDomain}/>
-          <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+        <ScatterChart margin={{ top: 20, right: 20, bottom: 10, left: -10 }}>
+          <CartesianGrid strokeDasharray="2 2" />
           <ReferenceArea data={envelop} fill="#8884d8" />
+          <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+          <Scatter type="number" data={[{...fullCGPoint, label: "Full Fuel CG"}]} fill="#de3242" shape="diamond">
+            <LabelList dataKey="label" position="right"/>
+          </Scatter>
+          <Scatter type="number" data={[{...emptyCGPoint, label: "Empty Fuel CG"}]} fill="#de3242" shape="diamond">
+            <LabelList dataKey="label" position="right"/>
+          </Scatter>
+          <XAxis type="number" dataKey="arm" name="CG" unit="inch" domain={armDomain}/>
+          <YAxis type="number" dataKey="weight" name="Weight" unit="lb" domain={weightDomain}/>
         </ScatterChart>
       </ResponsiveContainer>
     );
