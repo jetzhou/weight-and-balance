@@ -101,7 +101,7 @@ export default class WeightAndBalance extends Component {
     const emptyArm = emptyMoment / emptyWeight;
 
     return (
-      <div>
+      <div id="wrapper">
         <div>
           <div id="inputs">{this._renderInputs()}</div>
           <div id="chart">
@@ -157,7 +157,7 @@ export default class WeightAndBalance extends Component {
           style={{
             paddingRight: part === "fuel" ? "95px" : "0px",
             position: "relative",
-          }} 
+          }}
         >
           <Slider
             style={{ width: "100%", float: "left" }}
@@ -234,10 +234,11 @@ export default class WeightAndBalance extends Component {
   }
 
   _renderRow(item, {weight, maxWeight, arm}) {
+    const exceededWeight = weight > maxWeight;
     return (
       <TableRow>
         <TableRowColumn>{item}</TableRowColumn>
-        <TableRowColumn>{weight}</TableRowColumn>
+        <TableRowColumn className={exceededWeight ? "exceeded" : ""}>{weight}</TableRowColumn>
         <TableRowColumn className="hiddable">{maxWeight}</TableRowColumn>
         <TableRowColumn>{arm.toFixed(2)}</TableRowColumn>
         <TableRowColumn className="hiddable">{(weight * arm).toFixed(0)}</TableRowColumn>
